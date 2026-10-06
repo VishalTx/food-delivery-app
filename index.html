@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fffdf8">
+  <title>QuickFood | Good food, right on time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #fffdf8;
+      --ink: #20352f;
+      --muted: #727b73;
+      --line: #e8e7df;
+      --tomato: #e95537;
+      --tomato-dark: #cf432a;
+      --leaf: #26745b;
+      --pale-green: #e9f3eb;
+      --serif: "Playfair Display", Georgia, serif;
+      --sans: "DM Sans", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .page {
+      width: min(1440px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 28px 48px 36px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex: 0 0 auto;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      position: relative;
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--tomato);
+      color: white;
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .brand-mark::after {
+      position: absolute;
+      right: 5px;
+      bottom: 6px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #ffd771;
+      content: "";
+    }
+
+    .help-link {
+      color: #606b64;
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .help-link:hover { color: var(--tomato-dark); }
+
+    .layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(400px, 0.95fr) minmax(460px, 1.05fr);
+      gap: clamp(44px, 8vw, 116px);
+      align-items: center;
+      padding: 32px 0 0;
+    }
+
+    .form-side {
+      width: min(100%, 430px);
+      justify-self: center;
+      padding: 0 0 16px;
+      animation: arrive 650ms both;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 17px;
+      color: var(--leaf);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 22px;
+      height: 2px;
+      background: #78a88c;
+      content: "";
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(38px, 4vw, 54px);
+      font-weight: 600;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      max-width: 350px;
+      margin: 13px 0 29px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .mode-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+      margin: 0 0 27px;
+      padding: 4px;
+      border: 1px solid #efeee8;
+      border-radius: 12px;
+      background: #f7f6f0;
+    }
+
+    .mode-button {
+      min-height: 43px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: #747a73;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .mode-button[aria-selected="true"] {
+      background: white;
+      color: var(--ink);
+      box-shadow: 0 2px 9px rgb(34 47 39 / 8%);
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 9px;
+      color: #37463f;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .name-field { margin-bottom: 19px; }
+    .name-field[hidden] { display: none; }
+
+    .text-input, .phone-control {
+      width: 100%;
+      height: 54px;
+      border: 1px solid #dedfd7;
+      border-radius: 10px;
+      background: #fff;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .text-input { padding: 0 15px; color: var(--ink); }
+    .phone-control { display: flex; align-items: center; }
+
+    .text-input::placeholder, .phone-control input::placeholder { color: #a0a49e; }
+
+    .text-input:focus, .phone-control:focus-within {
+      border-color: var(--leaf);
+      outline: 0;
+      box-shadow: 0 0 0 3px rgb(38 116 91 / 11%);
+    }
+
+    .country-code {
+      display: flex;
+      height: 24px;
+      align-items: center;
+      gap: 8px;
+      padding: 0 13px 0 15px;
+      border-right: 1px solid var(--line);
+      color: #39483f;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .flag { font-size: 17px; line-height: 1; }
+
+    .phone-control input {
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 0 10px 10px 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      letter-spacing: 0;
+    }
+
+    .hint {
+      min-height: 17px;
+      margin: 8px 0 19px;
+      color: #858b84;
+      font-size: 11px;
+    }
+
+    .primary-button {
+      width: 100%;
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--tomato);
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      transition: background 160ms ease, transform 160ms ease;
+    }
+
+    .primary-button:hover { background: var(--tomato-dark); transform: translateY(-1px); }
+    .primary-button:active { transform: translateY(0); }
+    .button-arrow { font-size: 20px; font-weight: 400; line-height: 1; }
+
+    .terms {
+      max-width: 330px;
+      margin: 16px auto 0;
+      color: #878b84;
+      font-size: 11px;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .terms a { color: #4c6658; text-decoration-color: #bbc9bd; text-underline-offset: 2px; }
+
+    .status-message {
+      margin: 15px 0 0;
+      padding: 12px 13px;
+      border: 1px solid #c9dfce;
+      border-radius: 9px;
+      background: var(--pale-green);
+      color: #245d45;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .status-message[hidden] { display: none; }
+
+    .photo-panel {
+      position: relative;
+      min-height: min(700px, calc(100vh - 150px));
+      overflow: hidden;
+      border-radius: 18px;
+      isolation: isolate;
+      background: #42604c;
+      animation: arrive 750ms 100ms both;
+    }
+
+    .food-photo {
+      position: absolute;
+      z-index: -2;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 52% center;
+    }
+
+    .photo-panel::after {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background: linear-gradient(180deg, rgb(19 37 28 / 10%) 5%, transparent 35%, rgb(14 30 23 / 74%) 100%);
+      content: "";
+    }
+
+    .photo-tag {
+      position: absolute;
+      top: 22px;
+      left: 22px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 13px;
+      border: 1px solid rgb(255 255 255 / 45%);
+      border-radius: 999px;
+      background: rgb(255 255 255 / 91%);
+      color: #39483f;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .tag-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--leaf);
+    }
+
+    .photo-caption {
+      position: absolute;
+      right: 35px;
+      bottom: 35px;
+      left: 35px;
+      color: white;
+    }
+
+    .rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 14px;
+      color: #fff1d2;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .rating-star { color: #ffd166; font-size: 16px; }
+
+    .photo-caption h2 {
+      max-width: 420px;
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(34px, 4vw, 49px);
+      font-weight: 600;
+      line-height: 1.13;
+      letter-spacing: 0;
+    }
+
+    .photo-caption p {
+      margin: 11px 0 0;
+      color: rgb(255 255 255 / 82%);
+      font-size: 13px;
+    }
+
+    .footer-note {
+      padding-top: 17px;
+      color: #9a9c94;
+      font-size: 10px;
+      text-align: center;
+    }
+
+    @keyframes arrive {
+      from { opacity: 0; transform: translateY(9px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 1050px) {
+      .page { padding-right: 30px; padding-left: 30px; }
+      .layout { grid-template-columns: minmax(340px, 0.95fr) minmax(360px, 1.05fr); gap: 42px; }
+      .photo-panel { min-height: min(650px, calc(100vh - 150px)); }
+    }
+
+    @media (max-width: 760px) {
+      .page { padding: 17px 20px 20px; }
+      .topbar { height: 46px; }
+      .brand { font-size: 18px; }
+      .brand-mark { width: 33px; height: 33px; border-radius: 11px; }
+      .layout { grid-template-columns: minmax(0, 1fr); gap: 29px; padding-top: 28px; }
+      .form-side { width: min(100%, 440px); padding: 0; }
+      .intro { margin-bottom: 23px; }
+      .mode-switch { margin-bottom: 23px; }
+      .photo-panel { min-height: 340px; }
+      .photo-caption { right: 24px; bottom: 25px; left: 24px; }
+      .photo-caption h2 { max-width: 330px; font-size: 38px; }
+      .photo-tag { top: 16px; left: 16px; }
+      .footer-note { padding-top: 16px; }
+    }
+
+    @media (max-width: 420px) {
+      .page { padding-right: 16px; padding-left: 16px; }
+      .layout { gap: 24px; }
+      h1 { font-size: 40px; }
+      .photo-panel { min-height: 290px; }
+      .photo-caption h2 { font-size: 34px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="QuickFood home">
+        <span class="brand-mark" aria-hidden="true">q</span>
+        <span>quickfood</span>
+      </a>
+      <a class="help-link" href="mailto:hello@quickfood.example">Need a hand?</a>
+    </header>
+
+    <main class="layout">
+      <section class="form-side" aria-labelledby="page-title">
+        <div class="eyebrow">Your next favourite meal</div>
+        <h1 id="page-title">Good food.<br>Good mood.</h1>
+        <p class="intro" id="form-intro">Sign in for the dishes you love, from the places you love.</p>
+
+        <div class="mode-switch" role="tablist" aria-label="Account access">
+          <button class="mode-button" id="login-tab" type="button" role="tab" aria-selected="true" aria-controls="auth-form">Log in</button>
+          <button class="mode-button" id="signup-tab" type="button" role="tab" aria-selected="false" aria-controls="auth-form">Sign up</button>
+        </div>
+
+        <form id="auth-form">
+          <div class="name-field" id="name-field" hidden>
+            <label class="field-label" for="full-name">Your name</label>
+            <input class="text-input" id="full-name" name="name" type="text" placeholder="What should we call you?" autocomplete="name">
+          </div>
+
+          <label class="field-label" for="phone-number">Mobile number</label>
+          <div class="phone-control">
+            <span class="country-code"><span class="flag" aria-hidden="true">🇮🇳</span> +91</span>
+            <input id="phone-number" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" required aria-describedby="phone-hint">
+          </div>
+          <p class="hint" id="phone-hint">We’ll text you a one-time verification code.</p>
+
+          <button class="primary-button" id="submit-button" type="submit">
+            <span>Continue with phone</span><span class="button-arrow" aria-hidden="true">&#8594;</span>
+          </button>
+          <p class="terms" id="terms-copy">By continuing, you agree to QuickFood’s <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>.</p>
+          <p class="status-message" id="status-message" role="status" aria-live="polite" hidden></p>
+        </form>
+      </section>
+
+      <aside class="photo-panel" aria-label="Fresh Indian food from local restaurants">
+        <img class="food-photo" src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&amp;fit=crop&amp;w=1400&amp;q=85" alt="A colourful Indian thali with curry, rice, and fresh accompaniments">
+        <div class="photo-tag"><span class="tag-dot" aria-hidden="true"></span> LOCAL FAVOURITES, DELIVERED</div>
+        <div class="photo-caption">
+          <div class="rating"><span class="rating-star" aria-hidden="true">&#9733;</span> 4.8 <span>loved by food people</span></div>
+          <h2>A little taste of somewhere wonderful.</h2>
+          <p>Your neighbourhood, with more flavour.</p>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="footer-note">Made for good meals and the people you share them with.</footer>
+  </div>
+
+  <script>
+    const loginTab = document.querySelector("#login-tab");
+    const signupTab = document.querySelector("#signup-tab");
+    const nameField = document.querySelector("#name-field");
+    const nameInput = document.querySelector("#full-name");
+    const pageTitle = document.querySelector("#page-title");
+    const intro = document.querySelector("#form-intro");
+    const submitButton = document.querySelector("#submit-button span:first-child");
+    const terms = document.querySelector("#terms-copy");
+    const form = document.querySelector("#auth-form");
+    const phoneInput = document.querySelector("#phone-number");
+    const statusMessage = document.querySelector("#status-message");
+    let mode = "login";
+
+    function setMode(nextMode) {
+      mode = nextMode;
+      const isSignup = mode === "signup";
+      loginTab.setAttribute("aria-selected", String(!isSignup));
+      signupTab.setAttribute("aria-selected", String(isSignup));
+      nameField.hidden = !isSignup;
+      nameInput.required = isSignup;
+      pageTitle.innerHTML = isSignup ? "Your next<br>food crush." : "Good food.<br>Good mood.";
+      intro.textContent = isSignup
+        ? "Join the table. Your favourite local eats are just a few taps away."
+        : "Sign in for the dishes you love, from the places you love.";
+      submitButton.textContent = isSignup ? "Create your account" : "Continue with phone";
+      terms.innerHTML = isSignup
+        ? 'By creating an account, you agree to QuickFood’s <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>.'
+        : 'By continuing, you agree to QuickFood’s <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>.';
+      statusMessage.hidden = true;
+    }
+
+    loginTab.addEventListener("click", () => setMode("login"));
+    signupTab.addEventListener("click", () => setMode("signup"));
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const phone = phoneInput.value.replace(/\D/g, "");
+      statusMessage.textContent = `You’re all set. A one-time code is ready to send to +91 ${phone}. Connect an authentication service to deliver it.`;
+      statusMessage.hidden = false;
+    });
+  </script>
+</body>
+</html>
